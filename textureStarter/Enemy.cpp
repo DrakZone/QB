@@ -3,19 +3,27 @@
 #include <cstdlib> // for std::memcpy, std::malloc, std::free
 #include <math.h>
 
-Enemy enemys;
+using namespace std;
+using namespace DirectX;
+using namespace DirectX::SimpleMath;
 
-//NEW CODE
-
-void Enemy::initialise()
+void Enemy::initialise(MyD3D& d3d)
 {
+    //pandoras box
+    enemy.Initialise(BuildCube(d3d.GetMeshMgr()));
+    enemy.GetScale() = Vector3(0.5, 0.5, 0.5);
+    Material& matE = enemy.GetMesh().GetSubMesh(0).material;
+    matE.gfxData.Set(Vector4(2.2f, 2.2f, 2.2f, 1), Vector4(1.2f, 1.2f, 1.2f, 1), Vector4(0.9f, 0.8f, 0.8f, 1));
+    matE.pTextureRV = d3d.GetCache().LoadTexture(&d3d.GetDevice(), "wall.dds");
+    matE.texture = "wall.dds";
+
     for (int counter = 0; counter < NumberOfEnemy; counter++)
     {
         isAlive[counter] = false;
     }
 }
 
-void Enemy::update(double elapsed)
+void Enemy::update(float elapsed)
 {
     for (int counter = 0; counter < NumberOfEnemy; counter++) {
         // update position
@@ -28,11 +36,11 @@ void Enemy::update(double elapsed)
 
 }
 
-void Enemy::render()
+void Enemy::render(MyD3D& d3d)
 {
     for (int counter = 0; counter < NumberOfEnemy; counter++) {
         if (isAlive[counter] == true) {
-
+            d3d.GetFX().Render(enemy);
         }
     }
 }

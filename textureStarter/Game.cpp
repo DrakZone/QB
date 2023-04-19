@@ -26,9 +26,11 @@ void Game::Initialise()
 	mBox.Initialise(BuildCube(d3d.GetMeshMgr()));
 	mBox.GetScale() = Vector3(0.5,0.5,0.5);
 	Material& matB = mBox.GetMesh().GetSubMesh(0).material;
-	matB.gfxData.Set(Vector4(1.2f, 1.2f, 1.2f, 1), Vector4(1.2f, 1.2f, 1.2f, 1), Vector4(0.9f, 0.8f, 0.8f, 1));
+	matB.gfxData.Set(Vector4(2.2f, 2.2f, 2.2f, 1), Vector4(1.2f, 1.2f, 1.2f, 1), Vector4(0.9f, 0.8f, 0.8f, 1));
 	matB.pTextureRV = d3d.GetCache().LoadTexture(&d3d.GetDevice(), "wall.dds");
 	matB.texture = "wall.dds";
+
+	enemy.initialise(d3d);
 
 	d3d.GetFX().SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(0.47f, 0.47f, 0.47f), Vector3(0.15f, 0.15f, 0.15f), Vector3(0.25f, 0.25f, 0.25f));
 	this->sMKIn.Initialise(WinUtil::Get().GetMainWnd());
@@ -68,6 +70,8 @@ void Game::Update(float dTime)
 
 	mBox.SetPosition(pos);
 
+	enemy.update(dTime);
+
 }
 
 void Game::Render(float dTime)
@@ -90,6 +94,8 @@ void Game::Render(float dTime)
 
 	//floor
 	d3d.GetFX().Render(mQuad);
+
+	enemy.render(d3d);
 
 	d3d.EndRender();
 
