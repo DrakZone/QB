@@ -6,6 +6,8 @@
 #include "singleton.h"
 #include "Input.h"
 #include "Enemy.h"
+#include "Resources.h"
+#include "Score.h"
 
 class Game
 {
@@ -18,6 +20,9 @@ public:
 	void Render(float dTime);
 	void Initialise();
 	void Release();
+	Vector3 GetPosition();
+	void SetPosition(Vector3 pos);
+	void on_collision();
 	LRESULT WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 	MouseAndKeys& GetMKIn() {
@@ -28,7 +33,11 @@ public:
 
 private:
 
+	Vector3 Position;
 	Enemy enemy;
+	Resources resources;
+	Score score;
+	Font font;
 	bool keypressed;
 	float gAngle = 0;
 	MouseAndKeys sMKIn;

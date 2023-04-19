@@ -1,31 +1,25 @@
 #pragma once
-
 #include "constants.h"
-#include "D3D.h"
 #include "GeometryBuilder.h"
 #include "Mesh.h"
 #include "Model.h"
-#include "WindowUtils.h"
 
 using namespace std;
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-struct Enemy
+struct Resources 
 {
-    Vector3 position[NumberOfEnemy];
-    Vector3 velocity[NumberOfEnemy];
-    bool isAlive[NumberOfEnemy];
+    Vector3 position[NumberResources];
+    bool isEaten[NumberResources];
 
     void initialise(MyD3D& d3d);
     void update(float elapsed);
     void render(MyD3D& d3d);
-    void spawnEnemy();
+    void spawnResources();
 
-    void on_collision(int index);
+    void on_collision();
 
-    Model enemy;
+    Model resources;
+    float spinAngle = 0;
 };
-
-
-

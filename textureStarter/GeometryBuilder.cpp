@@ -76,7 +76,7 @@ Mesh& BuildPyramid(MeshMgr& mgr)
 		vertices[idx].Norm = vertices[idx + 1].Norm = vertices[idx + 2].Norm = b.Cross(a);
 	}
 
-	Mesh &mesh = mgr.CreateMesh("pyramid");
+	Mesh& mesh = mgr.CreateMesh("pyramid");
 	Material mat = Material::default;
 	mat.gfxData.Diffuse = Vector4(1, 1, 1, 1);
 	mat.gfxData.Ambient = Vector4(0.1f, 0.1f, 0.1f, 1);

@@ -11,6 +11,8 @@ using namespace DirectX::SimpleMath;
 
 void Game::Initialise()
 {
+	seed();
+
 	MyD3D& d3d = WinUtil::Get().GetD3D();
 	//wood floor
 	mQuad.Initialise(BuildQuad(d3d.GetMeshMgr()));
@@ -24,13 +26,17 @@ void Game::Initialise()
 
 	//pandoras box
 	mBox.Initialise(BuildCube(d3d.GetMeshMgr()));
-	mBox.GetScale() = Vector3(0.5,0.5,0.5);
+	mBox.GetScale() = Vector3(1.2,1.2,1.2);
+	mBox.GetPosition() = Vector3(0, 1, 0);
 	Material& matB = mBox.GetMesh().GetSubMesh(0).material;
-	matB.gfxData.Set(Vector4(2.2f, 2.2f, 2.2f, 1), Vector4(1.2f, 1.2f, 1.2f, 1), Vector4(0.9f, 0.8f, 0.8f, 1));
-	matB.pTextureRV = d3d.GetCache().LoadTexture(&d3d.GetDevice(), "wall.dds");
-	matB.texture = "wall.dds";
+	matB.gfxData.Set(Vector4(0.2f, 0.2f, 0.2f, 1), Vector4(0.2f, 0.2f, 5.2f, 1), Vector4(0.9f, 0.8f, 0.8f, 1));
+	//matB.pTextureRV = d3d.GetCache().LoadTexture(&d3d.GetDevice(), "wall.dds");
+	//matB.texture = "wall.dds";
 
 	enemy.initialise(d3d);
+	resources.initialise(d3d);
+	font.Initiallise(d3d);
+	score.initialise();
 
 	d3d.GetFX().SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(0.47f, 0.47f, 0.47f), Vector3(0.15f, 0.15f, 0.15f), Vector3(0.25f, 0.25f, 0.25f));
 	this->sMKIn.Initialise(WinUtil::Get().GetMainWnd());
@@ -39,38 +45,42 @@ void Game::Initialise()
 
 void Game::Release()
 {
+	font.Erase();
 }
 
 void Game::Update(float dTime)
 {		
 	
 	Vector3 pos = mBox.GetPosition();
-		if (Game::sMKIn.IsPressed(VK_W))
-			pos.z += velocity * SPEED * dTime ;
-		else if (Game::sMKIn.IsPressed(VK_S))
-			pos.z -= velocity * SPEED * dTime;
-		if (Game::sMKIn.IsPressed(VK_D))
-			pos.x += velocity * SPEED * dTime;
-		else if (Game::sMKIn.IsPressed(VK_A))
-			pos.x -= velocity * SPEED * dTime;
+	if (Game::sMKIn.IsPressed(VK_W))
+		pos.z += velocity * SPEED * dTime ;
+	else if (Game::sMKIn.IsPressed(VK_S))
+		pos.z -= velocity * SPEED * dTime;
+	if (Game::sMKIn.IsPressed(VK_D))
+		pos.x += velocity * SPEED * dTime;
+	else if (Game::sMKIn.IsPressed(VK_A))
+		pos.x -= velocity * SPEED * dTime;
 
-		if (pos.x >= 59.4) {
-			pos.x = 59.4;
-		}
-		if (pos.x <= -59.4) {
-			pos.x = -59.4;
-		}
-		if (pos.z >= 59.4) {
-			pos.z = 59.4;
-		}
-		if (pos.z <= -59.4) {
-			pos.z = -59.4;
-		}
-		
+	if (pos.x >= 59.4) {
+		pos.x = 59.4;
+	}
+	if (pos.x <= -59.4) {
+		pos.x = -59.4;
+	}
+	if (pos.z >= 59.4) {
+		pos.z = 59.4;
+	}
+	if (pos.z <= -59.4) {
+		pos.z = -59.4;
+	}
 
-	mBox.SetPosition(pos);
+	mBox.GetPosition() = pos;
+	SetPosition(pos);
 
 	enemy.update(dTime);
+	resources.update(dTime);
+
+	resources.spawnResources();
 
 }
 
@@ -82,24 +92,28 @@ void Game::Render(float dTime)
 	float alpha = 0.5f + sinf(gAngle * 2)*0.5f;
 
 	Vector3 camTgt(mBox.GetPosition());
-	Vector3 camPos(camTgt.x, camTgt.y + 20, camTgt.z);
+	Vector3 camPos(camTgt.x, camTgt.y + 40, camTgt.z);
 
 	d3d.GetFX().SetPerFrameConsts(d3d.GetDeviceCtx(), camPos);
 
 	CreateViewMatrix(d3d.GetFX().GetViewMatrix(), camPos, camTgt, Vector3(0, 0, 1));
 	CreateProjectionMatrix(d3d.GetFX().GetProjectionMatrix(), 0.25f*PI, WinUtil::Get().GetAspectRatio(), 1, 1000.f);
 
-	//main cube 
-	d3d.GetFX().Render(mBox);
-
 	//floor
 	d3d.GetFX().Render(mQuad);
 
+	//main cube 
+	d3d.GetFX().Render(mBox);
+
 	enemy.render(d3d);
+	resources.render(d3d);
+
+	font.Print();
 
 	d3d.EndRender();
 
 	sMKIn.PostProcess();
+
 }
 
 LRESULT Game::WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -120,5 +134,14 @@ LRESULT Game::WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 	}
 	//default message handling (resize window, full screen, etc)
 	return WinUtil::Get().DefaultMssgHandler(hwnd, msg, wParam, lParam);
+}
+
+Vector3 Game::GetPosition() { return Position; }
+void Game::SetPosition(Vector3 pos) {
+	Position = mBox.GetPosition();
+}
+
+void Game::on_collision() {
+	score.updateAmount(1);
 }
 

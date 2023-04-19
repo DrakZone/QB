@@ -300,36 +300,5 @@ void MouseAndKeys::PostProcess()
 	mMouseMove.y = 0;
 }
 
-enum class StateKey {
-	Not_Pressed = 0,
-	Pressed,
-	Released,
-	Held,
-};
-
-StateKey KeyCheck(int keycode) {
-	if (keycode > MAX_KEY) {
-		//show error
-	}
-	if (lastFrame[keycode] == 0 && thisFrame[keycode] == 0) {
-		return StateKey::Not_Pressed;
-	}
-	if (lastFrame[keycode] == 0 && thisFrame[keycode] == 1) {
-		return StateKey::Pressed;
-	}
-	if (lastFrame[keycode] == 1 && thisFrame[keycode] == 0) {
-		return StateKey::Released;
-	}
-	if (lastFrame[keycode] == 1 && thisFrame[keycode] == 1) {
-		return StateKey::Held;
-	}
-	return StateKey::Not_Pressed;
-
-
-	//for (int counter = 0; counter < MAX_KEY; counter++) {
-	//	lastFrame[counter] = thisFrame[counter];
-	//}
-
-}
 
 

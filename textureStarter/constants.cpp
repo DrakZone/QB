@@ -10,6 +10,7 @@ void seed() {
 }
 
 float random_getd(float min, float max) {
+
 	int range = max - min + 1;
 	float result = min + (rand()%range);
 

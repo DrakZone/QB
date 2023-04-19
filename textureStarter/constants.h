@@ -14,22 +14,22 @@ unsigned const PlayingFieldHeight = 120u;
 float const PlayerSpeed = 300.0;
 
 // resources
-unsigned const NumberResources = 1u << 10;
+unsigned const NumberResources = 50;
+int const ResourcesSpawnRate = 1;
+float const ResourcesRotationSpeed = 0.5f;
 
-float const EnemyMovementSpeed = 100.0;
-
+//Enemy
+float const EnemyMovementSpeed = 50.0;
 float const EnemySpeedRotation = PI * 2.0;
-int const EnemySpawnRate = 2;
+int const EnemySpawnRate = 1;
+unsigned const NumberOfEnemy = 20;
 
-unsigned const NumberOfEnemy = 10;
-
-struct vector4
-{
-	double x;
-	double y;
-	double z;
-	double w;
-};
+//struct vector3
+//{
+//	double x;
+//	double y;
+//	double z;
+//};
 
 void seed();
 
