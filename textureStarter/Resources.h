@@ -8,11 +8,9 @@ using namespace std;
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-struct Resources 
+class Resources 
 {
-    Vector3 position[NumberResources];
-    bool isEaten[NumberResources];
-
+public:
     void initialise(MyD3D& d3d);
     void update(float elapsed);
     void render(MyD3D& d3d);
@@ -20,6 +18,11 @@ struct Resources
 
     void on_collision();
 
+private:
+
     Model resources;
     float spinAngle = 0;
+    Vector3 position[NumberResources];
+    bool isEaten[NumberResources];
+
 };

@@ -9,7 +9,7 @@
 #include "Resources.h"
 #include "Score.h"
 
-class Game
+class Game : public Singleton<Game>
 {
 public:
 	Game() {}
@@ -20,7 +20,7 @@ public:
 	void Render(float dTime);
 	void Initialise();
 	void Release();
-	Vector3 GetPosition();
+	const Vector3 GetPosition();
 	void SetPosition(Vector3 pos);
 	void on_collision();
 	LRESULT WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -34,25 +34,10 @@ public:
 private:
 
 	Vector3 Position;
-	Enemy enemy;
-	Resources resources;
-	Score score;
-	Font font;
-	bool keypressed;
 	float gAngle = 0;
 	MouseAndKeys sMKIn;
 	const float SPEED = 25;
 	float velocity = 1;
-	//DirectX::SimpleMath::Vector3 walls_rot[3] = {
-	//	{0, 0, 0},
-	//	{-1.57, 0, 0},
-	//	{0, 0, -1.57}
-	//};
-	//DirectX::SimpleMath::Vector3 walls_pos[3] = {
-	//	{0, -1, 0},
-	//	{0, 2, 60},
-	//	{-60, 2, 0}
-	//};
 };
 
 #endif

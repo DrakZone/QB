@@ -8,7 +8,7 @@ using namespace std;
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-Game games;
+extern Game game;
 
 void Enemy::initialise(MyD3D& d3d)
 {
@@ -55,12 +55,12 @@ void Enemy::spawnEnemy()
 {
     for (int counter = 0; counter < NumberOfEnemy; counter++) {
         if (isAlive[counter] == false) {
-            float spawnrate = random_getd(0.0f, 10.0f);
+            float spawnrate = random_getd(0.0f, 15.0f);
             if (spawnrate <= EnemySpawnRate) {
                 isAlive[counter] = true;
-                position[counter].x = random_getd(PlayingFieldWidth / -3.0, PlayingFieldWidth / 3.0);
+                position[counter].x = random_getd(PlayingFieldWidth / -2.1, PlayingFieldWidth / 2.1);
                 position[counter].y = 1;
-                position[counter].z = random_getd(PlayingFieldHeight / -3.0, PlayingFieldHeight / 3.0);
+                position[counter].z = random_getd(PlayingFieldHeight / -2.1, PlayingFieldHeight / 2.1);
 
                 velocity[counter].x = random_getd(-1.0, 1.0);
                 velocity[counter].z = random_getd(-1.0, 1.0);
@@ -81,7 +81,7 @@ void Enemy::on_collision(int index)
     if (position[index].z >= 60 || position[index].z <= -60) {
         velocity[index].z = -velocity[index].z;
     }
-    if (position[index].x == games.GetPosition().x && position[index].z == games.GetPosition().z) {
+    if (position[index].x == game.GetPosition().x && position[index].z == game.GetPosition().z) {
         //GAME OVER
     }
 }

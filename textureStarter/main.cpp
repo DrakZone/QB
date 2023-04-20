@@ -6,7 +6,11 @@ using namespace std;
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-Game* pGame = nullptr;
+Game game;
+Score score;
+Enemy enemy;
+Resources resources;
+Font font;
 
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -15,21 +19,15 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		// Respond to a keyboard event.
 	case WM_CHAR:
-		if (pGame)
-		{
-			return pGame->WindowsMssgHandler(hwnd, msg, wParam, lParam);
-		}
+		return Game::Get().WindowsMssgHandler(hwnd, msg, wParam, lParam);
 	case WM_INPUT:
-		if (pGame)
-		{
-			pGame->GetMKIn().MessageEvent((HRAWINPUT)lParam);
-			break;
-		}
+		Game::Get().GetMKIn().MessageEvent((HRAWINPUT)lParam);
+		//return Game::Get().GetMKIn().MessageEvent((HRAWINPUT)lParam);
+		//return GetMKIn().MessageEvent((HRAWINPUT)lParam);
+		break;
 	}
 	return WinUtil::DefaultMssgHandler(hwnd, msg, wParam, lParam);
 }
-
-
 
 //main entry point for the game
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
@@ -46,8 +44,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 	WinUtil::Get().SetD3D(d3d);
 	d3d.GetCache().SetAssetPath("data/");
 
-	Game game;
-	pGame = &game;
 	game.Initialise();
 
 	bool canUpdateRender;

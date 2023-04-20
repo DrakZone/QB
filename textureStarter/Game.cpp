@@ -7,7 +7,10 @@ using namespace std;
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-
+extern Score score;
+extern Enemy enemy;
+extern Resources resources;
+extern Font font;
 
 void Game::Initialise()
 {
@@ -61,17 +64,17 @@ void Game::Update(float dTime)
 	else if (Game::sMKIn.IsPressed(VK_A))
 		pos.x -= velocity * SPEED * dTime;
 
-	if (pos.x >= 59.4) {
-		pos.x = 59.4;
+	if (pos.x >= 58.5) {
+		pos.x = 58.5;
 	}
-	if (pos.x <= -59.4) {
-		pos.x = -59.4;
+	if (pos.x <= -58.5) {
+		pos.x = -58.5;
 	}
-	if (pos.z >= 59.4) {
-		pos.z = 59.4;
+	if (pos.z >= 58.5) {
+		pos.z = 58.5;
 	}
-	if (pos.z <= -59.4) {
-		pos.z = -59.4;
+	if (pos.z <= -58.5) {
+		pos.z = -58.5;
 	}
 
 	mBox.GetPosition() = pos;
@@ -81,6 +84,9 @@ void Game::Update(float dTime)
 	resources.update(dTime);
 
 	resources.spawnResources();
+	if (score.getAmount()%5) {
+		enemy.spawnEnemy();
+	}
 
 }
 
@@ -136,7 +142,7 @@ LRESULT Game::WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 	return WinUtil::Get().DefaultMssgHandler(hwnd, msg, wParam, lParam);
 }
 
-Vector3 Game::GetPosition() { return Position; }
+const Vector3 Game::GetPosition() { return Position; }
 void Game::SetPosition(Vector3 pos) {
 	Position = mBox.GetPosition();
 }

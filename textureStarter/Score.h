@@ -34,8 +34,6 @@ private:
 	MyD3D* md3d = nullptr;	//our master
 	//Font
 	 
-	//Score
-	Score score;
 	//ID3D11ShaderResourceView* print_font_;
     Vector2 Origin = { 0, 0 };
 	float Scale = 1.5;

@@ -8,7 +8,7 @@ using namespace std;
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-Game game;
+extern Game game;
 
 void Resources::initialise(MyD3D& d3d)
 {
@@ -73,10 +73,10 @@ void Resources::on_collision()
             float R_right_z = position[counter].z + 0.2;
             float R_left_z = position[counter].z - 0.2;
 
-            float B_top_x = game.mBox.GetPosition().x + 0.5;
-            float B_bottom_x = game.mBox.GetPosition().x - 0.5;
-            float B_right_z = game.mBox.GetPosition().z + 0.5;
-            float B_left_z = game.mBox.GetPosition().z - 0.5;
+            float B_top_x = game.GetPosition().x + 0.5;
+            float B_bottom_x = game.GetPosition().x - 0.5;
+            float B_right_z = game.GetPosition().z + 0.5;
+            float B_left_z = game.GetPosition().z - 0.5;
 
             if (R_top_x >= B_bottom_x && R_bottom_x <= B_top_x && R_right_z >= B_left_z && R_left_z <= B_right_z) {
                 isEaten[counter] = true;

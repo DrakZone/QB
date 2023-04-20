@@ -10,7 +10,7 @@
 #include "Score.h"
 #include "CommonStates.h"
 
-
+extern Score score;
 
 //Start of Score class
 //-----------------------------------------------------------------------------
