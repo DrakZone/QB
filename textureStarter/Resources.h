@@ -15,6 +15,7 @@ public:
     void update(float elapsed);
     void render(MyD3D& d3d);
     void spawnResources();
+    void reset();
 
     void on_collision();
 

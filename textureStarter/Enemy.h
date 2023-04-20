@@ -24,6 +24,7 @@ public:
     void update(float elapsed);
     void render(MyD3D& d3d);
     void spawnEnemy();
+    void reset();
 
     void on_collision(int index);
 

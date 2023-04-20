@@ -44,6 +44,7 @@ void Game::Initialise()
 	d3d.GetFX().SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(0.47f, 0.47f, 0.47f), Vector3(0.15f, 0.15f, 0.15f), Vector3(0.25f, 0.25f, 0.25f));
 	this->sMKIn.Initialise(WinUtil::Get().GetMainWnd());
 
+
 }
 
 void Game::Release()
@@ -53,72 +54,162 @@ void Game::Release()
 
 void Game::Update(float dTime)
 {		
-	
-	Vector3 pos = mBox.GetPosition();
-	if (Game::sMKIn.IsPressed(VK_W))
-		pos.z += velocity * SPEED * dTime ;
-	else if (Game::sMKIn.IsPressed(VK_S))
-		pos.z -= velocity * SPEED * dTime;
-	if (Game::sMKIn.IsPressed(VK_D))
-		pos.x += velocity * SPEED * dTime;
-	else if (Game::sMKIn.IsPressed(VK_A))
-		pos.x -= velocity * SPEED * dTime;
-
-	if (pos.x >= 58.5) {
-		pos.x = 58.5;
+	switch (m_gameState)
+	{
+	case GameState::MainMenu:
+	{
+		if (Game::sMKIn.IsPressed(VK_RETURN))
+		{
+			SetGameState(GameState::Gameplay);
+			score.initialise(); // Reset the player's score
+			enemy.reset(); // Reset the enemy's state
+			resources.reset(); // Reset the resource state
+		}
+		if (Game::sMKIn.IsPressed(VK_H))
+		{
+			SetGameState(GameState::HowToPlay);
+		}
+		if (Game::sMKIn.IsPressed(VK_Q))
+		{
+			PostQuitMessage(0);
+		}
+		break;
 	}
-	if (pos.x <= -58.5) {
-		pos.x = -58.5;
+	case GameState::HowToPlay:
+	{
+		if (Game::sMKIn.IsPressed(VK_BACK))
+		{
+			SetGameState(GameState::MainMenu);
+		}
+		if (Game::sMKIn.IsPressed(VK_Q))
+		{
+			PostQuitMessage(0);
+		}
 	}
-	if (pos.z >= 58.5) {
-		pos.z = 58.5;
+	case GameState::Gameplay: {
+		Vector3 pos = mBox.GetPosition();
+		if (Game::sMKIn.IsPressed(VK_W))
+			pos.z += velocity * SPEED * dTime;
+		else if (Game::sMKIn.IsPressed(VK_S))
+			pos.z -= velocity * SPEED * dTime;
+		if (Game::sMKIn.IsPressed(VK_D))
+			pos.x += velocity * SPEED * dTime;
+		else if (Game::sMKIn.IsPressed(VK_A))
+			pos.x -= velocity * SPEED * dTime;
+
+		if (pos.x >= 58.5) {
+			pos.x = 58.5;
+		}
+		if (pos.x <= -58.5) {
+			pos.x = -58.5;
+		}
+		if (pos.z >= 58.5) {
+			pos.z = 58.5;
+		}
+		if (pos.z <= -58.5) {
+			pos.z = -58.5;
+		}
+
+		mBox.GetPosition() = pos;
+		SetPosition(pos);
+
+		enemy.update(dTime);
+		resources.update(dTime);
+
+		resources.spawnResources();
+		if (score.getAmount() % 5) {
+			enemy.spawnEnemy();
+		}
+		break;
 	}
-	if (pos.z <= -58.5) {
-		pos.z = -58.5;
+	case GameState::GameOver:
+	{
+		if (Game::sMKIn.IsPressed(VK_BACK))
+		{
+			SetGameState(GameState::MainMenu);
+		}
+		if (Game::sMKIn.IsPressed(VK_Q)) 
+		{
+			PostQuitMessage(0);
+		}
+		break;
 	}
-
-	mBox.GetPosition() = pos;
-	SetPosition(pos);
-
-	enemy.update(dTime);
-	resources.update(dTime);
-
-	resources.spawnResources();
-	if (score.getAmount()%5) {
-		enemy.spawnEnemy();
 	}
-
 }
 
 void Game::Render(float dTime)
 {
-	MyD3D& d3d = WinUtil::Get().GetD3D();
-	d3d.BeginRender(Colours::Black);
+	switch (m_gameState)
+	{
+	case GameState::MainMenu:
+	{
+		MyD3D& d3d = WinUtil::Get().GetD3D();
+		d3d.BeginRender(Colours::Black);
 
-	float alpha = 0.5f + sinf(gAngle * 2)*0.5f;
+		// Draw some text on the screen
+		font.MainMenu("Press Enter to start", Vector2(SCREEN_WIDTH/2, SCREEN_HEIGHT/2));
+		font.MainMenu("Press 'H' for How To Play", Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50));
+		font.MainMenu("Press 'Q' To Quit", Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 100));
 
-	Vector3 camTgt(mBox.GetPosition());
-	Vector3 camPos(camTgt.x, camTgt.y + 40, camTgt.z);
+		d3d.EndRender();
+		break;
+	}
+	case GameState::HowToPlay:
+	{
+		MyD3D& d3d = WinUtil::Get().GetD3D();
+		d3d.BeginRender(Colours::Black);
 
-	d3d.GetFX().SetPerFrameConsts(d3d.GetDeviceCtx(), camPos);
+		font.MainMenu(" ---------WASD TO MOVE!-------- \n COLLECT RED TRIANGLE TO EARN POINTS! \n AVOID BLUE TRIANGLE! THEY KILL YOU!", Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2));
+		font.MainMenu("Press Q to quit! Press backspace to go back to main menu!", Vector2(SCREEN_WIDTH / 2 + 200, SCREEN_WIDTH / 3));
 
-	CreateViewMatrix(d3d.GetFX().GetViewMatrix(), camPos, camTgt, Vector3(0, 0, 1));
-	CreateProjectionMatrix(d3d.GetFX().GetProjectionMatrix(), 0.25f*PI, WinUtil::Get().GetAspectRatio(), 1, 1000.f);
+		d3d.EndRender();
+		break;
+	}
+	case GameState::Gameplay:
+	{
+		MyD3D& d3d = WinUtil::Get().GetD3D();
+		d3d.BeginRender(Colours::Black);
 
-	//floor
-	d3d.GetFX().Render(mQuad);
+		float alpha = 0.5f + sinf(gAngle * 2) * 0.5f;
 
-	//main cube 
-	d3d.GetFX().Render(mBox);
+		Vector3 camTgt(mBox.GetPosition());
+		Vector3 camPos(camTgt.x, camTgt.y + 40, camTgt.z);
 
-	enemy.render(d3d);
-	resources.render(d3d);
+		d3d.GetFX().SetPerFrameConsts(d3d.GetDeviceCtx(), camPos);
 
-	font.Print();
+		CreateViewMatrix(d3d.GetFX().GetViewMatrix(), camPos, camTgt, Vector3(0, 0, 1));
+		CreateProjectionMatrix(d3d.GetFX().GetProjectionMatrix(), 0.25f * PI, WinUtil::Get().GetAspectRatio(), 1, 1000.f);
 
-	d3d.EndRender();
+		//floor
+		d3d.GetFX().Render(mQuad);
 
-	sMKIn.PostProcess();
+		//main cube 
+		d3d.GetFX().Render(mBox);
+
+		enemy.render(d3d);
+		resources.render(d3d);
+
+		font.Print();
+
+		d3d.EndRender();
+
+		sMKIn.PostProcess();
+		break;
+	}
+	case GameState::GameOver:
+	{
+		MyD3D& d3d = WinUtil::Get().GetD3D();
+		d3d.BeginRender(Colours::Black);
+
+		 //Draw some text on the screen
+		font.GameOver("Game Over!", Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2));
+		font.GameOver("Press BackSpace to go Back to Main Menu", Vector2(SCREEN_WIDTH / 2 + 110, SCREEN_HEIGHT / 2 + 50));
+		font.GameOver("Press Q to quit!", Vector2(SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 3 ));
+
+		d3d.EndRender();
+		break;
+	}
+	}
 
 }
 
@@ -132,8 +223,6 @@ LRESULT Game::WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 		switch (wParam)
 		{
 		case 27:
-		case 'q':
-		case 'Q':
 			PostQuitMessage(0);
 			return 0;
 		}

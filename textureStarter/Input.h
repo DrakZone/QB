@@ -17,6 +17,8 @@ provides in "winuser.h", to make it more consistent.
 #define VK_NUMPAD_ENTER 0xF0		//these three are very naughty
 #define VK_LALT			0xF1		//they are actually some oem
 #define VK_RALT			0xF2		//keys ATTN/FINISH/COPY - but lets pinch them :)
+#define VK_BACK			0x08		//BackSpace
+#define VK_RETURN		0x0D		//Enter Key
 
 
 #define VK_0	0x30

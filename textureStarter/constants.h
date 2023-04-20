@@ -4,8 +4,8 @@
 #include <string>   // for std::string
 #include <math.h>
 
-unsigned const SCREEN_WIDTH = 1280u;
-unsigned const SCREEN_HEIGHT = 720u;
+unsigned const SCREEN_WIDTH = 1920u;
+unsigned const SCREEN_HEIGHT = 1080u;
 
 unsigned const PlayingFieldWidth = 120u;
 unsigned const PlayingFieldHeight = 120u;

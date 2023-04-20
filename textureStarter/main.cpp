@@ -1,6 +1,7 @@
 #include "WindowUtils.h"
 #include "D3D.h"
 #include "Game.h"
+#include "constants.h"
 
 using namespace std;
 using namespace DirectX;
@@ -34,8 +35,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 	PSTR cmdLine, int showCmd)
 {
 
-	int w(1024), h(768);
-	if (!WinUtil::Get().InitMainWindow(w, h, hInstance, "Proj_1", MainWndProc, true))
+	if (!WinUtil::Get().InitMainWindow(SCREEN_WIDTH, SCREEN_HEIGHT, hInstance, "Proj_1", MainWndProc, true))
 		assert(false);
 
 	MyD3D d3d;
@@ -44,6 +44,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 	WinUtil::Get().SetD3D(d3d);
 	d3d.GetCache().SetAssetPath("data/");
 
+	game.SetGameState(GameState::MainMenu);
 	game.Initialise();
 
 	bool canUpdateRender;

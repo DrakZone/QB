@@ -8,6 +8,14 @@
 #include "Enemy.h"
 #include "Resources.h"
 #include "Score.h"
+#include "Screen.h"
+
+enum class GameState {
+	MainMenu,
+	Gameplay,
+	GameOver,
+	HowToPlay
+};
 
 class Game : public Singleton<Game>
 {
@@ -22,6 +30,10 @@ public:
 	void Release();
 	const Vector3 GetPosition();
 	void SetPosition(Vector3 pos);
+	void SetGameState(GameState state)
+	{
+		m_gameState = state;
+	}
 	void on_collision();
 	LRESULT WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -33,11 +45,13 @@ public:
 
 private:
 
+	GameState m_gameState;
 	Vector3 Position;
 	float gAngle = 0;
 	MouseAndKeys sMKIn;
 	const float SPEED = 25;
 	float velocity = 1;
 };
+
 
 #endif

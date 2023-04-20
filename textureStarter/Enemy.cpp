@@ -19,10 +19,6 @@ void Enemy::initialise(MyD3D& d3d)
     matE.pTextureRV = d3d.GetCache().LoadTexture(&d3d.GetDevice(), "wall.dds");
     matE.texture = "wall.dds";
 
-    for (int counter = 0; counter < NumberOfEnemy; counter++)
-    {
-        isAlive[counter] = false;
-    }
 }
 
 void Enemy::update(float elapsed)
@@ -73,6 +69,14 @@ void Enemy::spawnEnemy()
     }
 }
 
+void Enemy::reset()
+{
+    for (int counter = 0; counter < NumberOfEnemy; counter++)
+    {
+        isAlive[counter] = false;
+    }
+}
+
 void Enemy::on_collision(int index)
 {
     if (position[index].x >= 60 || position[index].x <= -60) {
@@ -81,8 +85,22 @@ void Enemy::on_collision(int index)
     if (position[index].z >= 60 || position[index].z <= -60) {
         velocity[index].z = -velocity[index].z;
     }
-    if (position[index].x == game.GetPosition().x && position[index].z == game.GetPosition().z) {
-        //GAME OVER
+    for (int counter = 0; counter < NumberResources; counter++) {
+        if (isAlive[counter] == true) {
+            float R_top_x = position[counter].x + 0.9;
+            float R_bottom_x = position[counter].x - 0.9;
+            float R_right_z = position[counter].z + 0.9;
+            float R_left_z = position[counter].z - 0.9;
+
+            float B_top_x = game.GetPosition().x + 0.5;
+            float B_bottom_x = game.GetPosition().x - 0.5;
+            float B_right_z = game.GetPosition().z + 0.5;
+            float B_left_z = game.GetPosition().z - 0.5;
+
+            if (R_top_x >= B_bottom_x && R_bottom_x <= B_top_x && R_right_z >= B_left_z && R_left_z <= B_right_z) {
+                game.SetGameState(GameState::GameOver);
+            }
+        }
     }
 }
 

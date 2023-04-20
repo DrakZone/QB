@@ -30,16 +30,22 @@ public:
 	void Initiallise(MyD3D& d3d);
 	void Erase();
 	void Print();
+	void MainMenu(char* mainMenu, Vector2 position);
+	void GameOver(char* gameOver, Vector2 position_2);
+
 private:
 	MyD3D* md3d = nullptr;	//our master
-	//Font
-	 
-	//ID3D11ShaderResourceView* print_font_;
+
     Vector2 Origin = { 0, 0 };
 	float Scale = 1.5;
 	DirectX::SpriteFont* pSpriteFont = nullptr;
 	DirectX::SpriteBatch* pSpriteBatch = nullptr;
-	std::stringstream amount;
-	std::string translate;
 	const char* score_;
+
+	char* mainMenu;
+	Vector2 position;
+
+	char* gameOver;
+	Vector2 position_2;
+
 };

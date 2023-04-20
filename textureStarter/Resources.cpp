@@ -18,12 +18,6 @@ void Resources::initialise(MyD3D& d3d)
     matR.gfxData.Set(Vector4(2.2f, 2.2f, 2.2f, 1), Vector4(1.2f, 1.2f, 1.2f, 1), Vector4(0.9f, 0.8f, 0.8f, 1));
     matR.pTextureRV = d3d.GetCache().LoadTexture(&d3d.GetDevice(), "wall.dds");
     matR.texture = "wall.dds";
-
-    for (int counter = 0; counter < NumberResources; counter++)
-    {
-        isEaten[counter] = true;
-    }
-    spawnResources();
 }
 
 void Resources::update(float elapsed)
@@ -63,15 +57,23 @@ void Resources::spawnResources()
     }
 }
 
+void Resources::reset()
+{
+    for (int counter = 0; counter < NumberResources; counter++)
+    {
+        isEaten[counter] = true;
+    }
+    spawnResources();
+}
 
 void Resources::on_collision()
 {
     for (int counter = 0; counter < NumberResources; counter++) {
         if (isEaten[counter] == false) {
-            float R_top_x = position[counter].x + 0.2;
-            float R_bottom_x = position[counter].x - 0.2;
-            float R_right_z = position[counter].z + 0.2;
-            float R_left_z = position[counter].z - 0.2;
+            float R_top_x = position[counter].x + 0.5;
+            float R_bottom_x = position[counter].x - 0.5;
+            float R_right_z = position[counter].z + 0.5;
+            float R_left_z = position[counter].z - 0.5;
 
             float B_top_x = game.GetPosition().x + 0.5;
             float B_bottom_x = game.GetPosition().x - 0.5;
