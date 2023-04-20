@@ -233,6 +233,7 @@ LRESULT Game::WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 
 const Vector3 Game::GetPosition() { return Position; }
 void Game::SetPosition(Vector3 pos) {
+	mBox.GetPosition() = pos;
 	Position = mBox.GetPosition();
 }
 
