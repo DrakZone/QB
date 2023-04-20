@@ -24,13 +24,6 @@ float const EnemySpeedRotation = PI * 2.0;
 int const EnemySpawnRate = 1;
 unsigned const NumberOfEnemy = 20;
 
-//struct vector3
-//{
-//	double x;
-//	double y;
-//	double z;
-//};
-
 void seed();
 
 float random_getd(float min, float max);
